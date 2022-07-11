@@ -1,3 +1,5 @@
+# Created by Ricardo Quintela
+
 import re
 
 def find_functions(text: str) -> list:

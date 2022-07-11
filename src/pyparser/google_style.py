@@ -1,3 +1,5 @@
+# Created by Ricardo Quintela
+
 import os
 import re
 

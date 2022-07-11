@@ -1,3 +1,5 @@
+# Created by Ricardo Quintela
+
 def read_file(path: str) -> str:
     """Reads a file on the given path
 
