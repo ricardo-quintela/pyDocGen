@@ -109,8 +109,8 @@ def google_doc_parser(path: str):
         else:
             inClass = False
 
-        # write the name of the class if it hasn't been written before
 
+        # write the name of the class if it hasn't been written before
         if not name_is_written[class_ind.index(parent_class)]:
             name_end = text.find(":", parent_class + len("class "))
 
@@ -120,9 +120,34 @@ def google_doc_parser(path: str):
 
             cl_name = text[parent_class + len("class") : name_end]
 
+            # create a description
+            cl_description = re.search(r":\s*\"\"\"[\S\n\t\v ]*?\"\"\"", text[parent_class:])
+
+            # remove triple quotes from description text and get the attributes
+            if cl_description:
+                cl_desc_st = cl_description.start()
+                cl_desc_end = cl_description.end()
+
+                cl_description = re.search(r"\"\"\"[\S\n\t\v ]*?\"\"\"", cl_description.group()).group()[3:-3]
+                cl_description = re.sub(r"\\n", "  \n", cl_description)
+
+                attributes = re.search(r"\"\"\"\n+\s*[\S\n\t\v ]*?\s+\n", text[cl_desc_end - 3:])
+
+
+            else:
+                cl_description = ""
+                attributes = re.search(r":\s*[\S\n\t\v ]*?\n\n+", text[name_end:])
+
+
+            if attributes:
+                attributes = re.sub(r"^", " *", re.sub(r"\n", "  \n* ", re.sub(r"\n{2,}", "", re.sub(r"[\t ]+", "", attributes.group()[3:]))))
+            
+            # TODO: FINNISH ATTRIBUTES -> bug in * and whitespace search
+            print(attributes)
+
 
             with open(md_file_path, "a") as file:
-                append_file(file, "# The " + cl_name + " class\n  \n  \n## Methods\n  \n  \n")
+                append_file(file, "# The " + cl_name + " class\n  \n" + cl_description + "  \n  \n## Methods\n  \n  \n")
 
             name_is_written[class_ind.index(parent_class)] = True
 
@@ -150,10 +175,8 @@ def google_doc_parser(path: str):
         # if docstring doesnt exist
         if docstring_start != 2:
             
-            
+            # docstring ending
             docstring_end = text.find("\"\"\"", docstring_start)
-
-
 
             # arguments start index
             args_ind = text.find("Args:\n", docstring_start, docstring_end) + len("Args:\n")
@@ -241,7 +264,7 @@ def google_doc_parser(path: str):
         with open(md_file_path, "a") as file:
 
             # write the name and the description
-            append_file(file, "### " + re.sub("_", "\\_", name) + "  \n  \n**Signature:**  \n  \n>" + chr(96)*3 + re.sub(r"\n+", "", signature) + chr(96)*3 + "  \n  \n**Description:**  \n  \n>" + re.sub(r"\\n+", "  \n>", re.sub(r" {2,}", "", re.sub(r"\n+", "", description))) + "  \n  \n")
+            append_file(file, "### " + re.sub(r"_", "\\_", name) + "  \n  \n**Signature:**  \n  \n>" + chr(96)*3 + re.sub(r"\n+", "", signature) + chr(96)*3 + "  \n  \n**Description:**  \n  \n>" + re.sub(r"\\n+", "  \n>", re.sub(r" {2,}", "", re.sub(r"\n+", "", description))) + "  \n  \n")
             
             # write the args if they exist
             if docstring_start != 2 and args_ind >= len("Args:\n"):
@@ -249,11 +272,11 @@ def google_doc_parser(path: str):
 
             # write the raises if they exist
             if docstring_start != 2 and raises_ind >= len("Raises:\n"):
-                append_file(file, "**Raises:**  \n  \n>" + raises.replace("  ", "") + "  \n  \n")
+                append_file(file, "**Raises:**  \n  \n>" + re.sub(r" {2,}", "", raises) + "  \n  \n")
                 
             # write the returns if they exist
             if docstring_start != 2 and returns_ind >= len("Returns:\n"):
-                append_file(file, "**Returns:**  \n  \n>" + returns.replace("  ", "") + "  \n  \n")
+                append_file(file, "**Returns:**  \n  \n>" + re.sub(r" {2,}", "", returns) + "  \n  \n")
 
 
             append_file(file, "  \n")
