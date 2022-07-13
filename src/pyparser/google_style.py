@@ -117,84 +117,30 @@ def google_doc_parser(path: str):
             name_end = text.find(":", parent_class + len("class "))
 
             # check to see if the class has paretheses
-            has_parentheses = re.search(r"\([a-zA-Z0-9\._,]+\)", text[parent_class + len("class "): name_end])
+            has_parentheses = re.search(r"\([a-zA-Z0-9\._, ]+\)", text[parent_class + len("class "): name_end])
 
-            # generate the name of the class
+            # generate the name of the class and the parent classes
             if has_parentheses:
-                name_end = has_parentheses.end()
-
+                name_end = has_parentheses.start() + 1
                 inheritance = has_parentheses.group()[1:-1]
+                inheritance = re.sub(r", *", chr(96)*3 + ", " + chr(96)*3, inheritance)
+
+                cl_name = text[parent_class + len("class") : parent_class + len("class") + name_end]
+
             else:
                 inheritance = ""
+                cl_name = text[parent_class + len("class") : name_end]
 
-            cl_name = text[parent_class + len("class") : name_end]
-
-
-            simple_class = True if re.search(r":\s+def", text[parent_class:]) else False
-
-
-            # create a description
-            cl_description = re.search(r":\s*\"\"\"[\S\n\t\v ]*?\"\"\"[\s]*def", text[parent_class:])
-
-
-            # remove triple quotes from description text and get the attributes
-            if cl_description and not simple_class:
-
-                cl_desc_st = cl_description.start()
-                cl_desc_end = cl_description.end()
-
-
-                cl_description = re.search(r"\"\"\"[\S\n\t\v ]*?\"\"\"", cl_description.group()).group()[3:-3]
-                cl_description = re.sub(r"\\n", "  \n", cl_description)
-
-
-                # generate the attributes
-                attributes = re.search(r"\"\"\"\s+[\S\n\t\v ]*?\s+def", text[cl_desc_end - 3:])
-
-
-            elif not simple_class:
-                cl_description = ""
-                attributes = re.search(r":\s+[\S\n\t\v ]*?\s+def", text[name_end:])
-
-            else:
-                cl_description = ""
-                attributes = ""
-
-
-            # generate the attributes md
-            if attributes and not simple_class:
-
-                attributes = re.sub(":|\"\"\"[\S\n\t\v ]*?\"\"\"", "", attributes.group())
-
-                attributes = re.sub(r"^", "Attrbute | Type | Default value\n-|-|-\n", re.sub(r"\n", "  \n", re.sub(r"\n{2,}", "", re.sub(r"[\t ]{2,}", "", attributes))))
-
-
-
-                # place double vertical slash in the value area
-                attributes = re.sub(r"[\t ]*=[\t ]*", " || ", attributes)
-
-
-
-                # find all the variable types
-                var_types = re.finditer(r"[\t ]*:[\t ]*[a-zA-Z0-9_]+[\t ]*\|?", attributes)
-
-                # place vertical slashes
-                for match in var_types:
-                    type_name = re.search(r"[a-zA-Z0-9_]+", match.group()).group()
-                    attributes = attributes.replace(match.group(), " | " + type_name + " ")
-
+            
 
 
             # write the class name, description and attributes if they exist
             with open(md_file_path, "a") as file:
-                append_file(file, "# The " + cl_name + " class\n  \n" + cl_description + "  \n  \n")
+                append_file(file, "# The " + cl_name + " class\n  \n")
 
 
                 if len(inheritance):
-                    append_file(file, "**Inherits from** " + chr(96)*3 + inheritance + chr(96)*3 + "\n  \n  ")
-
-                if attributes or len(attributes):
-                    append_file(file, "---\n## Attributes\n  \n  \n" + attributes + "\n\n  \n---\n## Methods\n  \n  \n")
+                    append_file(file, "**Inherits from** " + chr(96)*3 + inheritance + chr(96)*3 + "\n\n---\n  \n  ")
 
 
 
