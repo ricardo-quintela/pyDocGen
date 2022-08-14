@@ -261,7 +261,7 @@ def google_doc_parser(path: str):
         with open(md_file_path, "a") as file:
 
             # write the name and the description
-            append_file(file, "### " + re.sub(r"_", "\\_", name) + "  \n  \n**Signature:**  \n  \n>" + chr(96)*3 + re.sub(r"\n+", "", signature) + chr(96)*3 + "  \n  \n**Description:**  \n  \n>" + re.sub(r"\\n+", "  \n>", re.sub(r" {2,}", "", re.sub(r"\n+", "", description))) + "  \n  \n")
+            append_file(file, "## " + re.sub(r"_", "\\_", name) + "  \n  \n**Signature:**  \n  \n>" + chr(96)*3 + re.sub(r"\n+", "", signature) + chr(96)*3 + "  \n  \n**Description:**  \n  \n>" + re.sub(r"\\n+", "  \n>", re.sub(r" {2,}", "", re.sub(r"\n+", "", description))) + "  \n  \n")
             
             # write the args if they exist
             if docstring_start != 2 and args_ind >= len("Args:\n"):
