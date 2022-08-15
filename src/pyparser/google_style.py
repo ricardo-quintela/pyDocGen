@@ -111,7 +111,7 @@ def google_doc_parser(path: str):
 
 
         # write the name of the class if it hasn't been written before
-        if not name_is_written[class_ind.index(parent_class)]:
+        if inClass and not name_is_written[class_ind.index(parent_class)]:
 
             # get the end of the name of the class index
             name_end = text.find(":", parent_class + len("class "))
@@ -152,7 +152,7 @@ def google_doc_parser(path: str):
         # write a line break if the current function no longer belongs to a class
         if prev_func_in_class and not inClass:
             with open(md_file_path, "a") as file:
-                append_file(file, "\n\n  ---\n  ")
+                append_file(file, "\n  \n---\n  ")
 
 
 
@@ -261,11 +261,11 @@ def google_doc_parser(path: str):
         with open(md_file_path, "a") as file:
 
             # write the name and the description
-            append_file(file, "## " + re.sub(r"_", "\\_", name) + "  \n  \n**Signature:**  \n  \n>" + chr(96)*3 + re.sub(r"\n+", "", signature) + chr(96)*3 + "  \n  \n**Description:**  \n  \n>" + re.sub(r"\\n+", "  \n>", re.sub(r" {2,}", "", re.sub(r"\n+", "", description))) + "  \n  \n")
+            append_file(file, "## " + re.sub(r"_", "\\_", name) + "\n---  \n  \n**Signature:**  \n  \n>" + chr(96)*3 + re.sub(r"\n+", "", signature) + chr(96)*3 + "  \n  \n**Description:**  \n  \n>" + re.sub(r"\\n+", "  \n>", re.sub(r" {2,}", "", re.sub(r"\n+", "", description))) + "  \n  \n")
             
             # write the args if they exist
             if docstring_start != 2 and args_ind >= len("Args:\n"):
-                append_file(file, "**Arguments:**  \n  \n>" + re.sub(r"\n+|\\n+", "  \n>", re.sub(r" {2,}", "", args)) + "  \n  \n")
+                append_file(file, "**Arguments:**  \n  \n>" + re.sub(r"\n+|\\n+", "  \n", re.sub(r" {2,}", "", args)) + "  \n  \n")
 
             # write the raises if they exist
             if docstring_start != 2 and raises_ind >= len("Raises:\n"):
