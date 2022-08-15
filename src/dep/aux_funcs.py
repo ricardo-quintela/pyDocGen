@@ -1,3 +1,5 @@
+import os
+
 def find_between(arr: list, num: int) -> int:
     """Checks if a given number can be put between two others in the given array
 
@@ -20,3 +22,39 @@ def find_between(arr: list, num: int) -> int:
 
     if arr[-1] < num:
         return arr[-1]
+        
+
+def get_mdpath(path: str) -> str:
+    """Parses the given file path and returns a path to the md file to create and write
+
+    Args:
+        path (str): the python file path
+
+    Returns:
+        str: the path to the md file
+    """
+    # relative path
+    if os.path.dirname(path) == "":
+
+        # create a directory
+        try:
+            os.mkdir("docs")
+
+        except FileExistsError:
+            pass
+
+        md_file_path = "docs\\" + os.path.basename(path)[:os.path.basename(path).find(".")] + ".md"
+
+    # absolute path
+    else:
+        # create a directory
+        try:
+            os.mkdir(os.path.dirname(path) + "\\docs")
+
+        except FileExistsError:
+            pass
+
+        md_file_path = os.path.dirname(path) + "\\docs\\" + os.path.basename(path)[:os.path.basename(path).find(".")] + ".md"
+
+
+    return md_file_path

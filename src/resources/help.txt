@@ -1,9 +1,15 @@
 Welcome to pydocgen
-
 This program generates automatic documentation in markdown files from a python file's docstrings.
 
 Usage:
+    pydocgen [--help] -> to show this message
 
-pydocgen --help -> to show this message
 
-pydocgen -g path -> generate documentation from Google style docstrings of the file in path
+Scan an entire package for python files:
+    pydocgen {-format} [--pkg] path
+
+
+Format styles:
+
+  * Google
+    pydocgen -g path

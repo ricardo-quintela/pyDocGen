@@ -1,18 +1,19 @@
 # Created by Ricardo Quintela
 
-import os, re
+import re
 
 from .code_elements import find_functions, find_classes, find_indentation_level, find_strings
 
-from dep import read_file, new_file, append_file, find_between
+from dep import read_file, append_file, find_between
 
 
 
-def google_doc_parser(path: str):
+def google_doc_parser(path: str, md_file_path: str):
     """Parses docstrings in google pyhton format
 
     Args:
         path (str): the path to the file to parse
+        md_file_path (str): the path to the md doc file
     """
 
     # read the text from the file
@@ -21,34 +22,7 @@ def google_doc_parser(path: str):
 
     except FileNotFoundError:
         print("ERROR: File not found")
-
-    # relative path
-    if os.path.dirname(path) == "":
-
-        # create a directory
-        try:
-            os.mkdir("docs")
-
-        except FileExistsError:
-            pass
-
-        md_file_path = "docs\\" + os.path.basename(path)[:os.path.basename(path).find(".")] + ".md"
-
-    # absolute path
-    else:
-        # create a directory
-        try:
-            os.mkdir(os.path.dirname(path) + "\\docs")
-
-        except FileExistsError:
-            pass
-
-        md_file_path = os.path.dirname(path) + "\\docs\\" + os.path.basename(path)[:os.path.basename(path).find(".")] + ".md"
-
-
-    
-    # create an empty file
-    f = new_file(md_file_path)
+        return
 
 
     # find all the strings
@@ -111,7 +85,7 @@ def google_doc_parser(path: str):
 
 
         # write the name of the class if it hasn't been written before
-        if not name_is_written[class_ind.index(parent_class)]:
+        if inClass and not name_is_written[class_ind.index(parent_class)]:
 
             # get the end of the name of the class index
             name_end = text.find(":", parent_class + len("class "))
@@ -265,7 +239,7 @@ def google_doc_parser(path: str):
             
             # write the args if they exist
             if docstring_start != 2 and args_ind >= len("Args:\n"):
-                append_file(file, "**Arguments:**  \n  \n>" + re.sub(r"\n+|\\n+", "  \n>", re.sub(r" {2,}", "", args)) + "  \n  \n")
+                append_file(file, "**Arguments:**  \n  \n>" + re.sub(r"\n+|\\n+", "  \n", re.sub(r" {2,}", "", args)) + "  \n  \n")
 
             # write the raises if they exist
             if docstring_start != 2 and raises_ind >= len("Raises:\n"):

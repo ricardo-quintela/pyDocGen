@@ -1,7 +1,5 @@
 # Created by Ricardo Quintela
 
-from .file_worker import read_file
-from .file_worker import new_file
-from .file_worker import append_file
+from .file_worker import read_file, new_file, append_file
 
-from .aux_funcs import find_between
+from .aux_funcs import find_between, get_mdpath
