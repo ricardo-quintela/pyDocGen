@@ -2,8 +2,6 @@
 
 import re
 
-from pyparsing import string_end
-
 def find_functions(text: str) -> list:
     """Finds the indexes of all the definitions on the code
 

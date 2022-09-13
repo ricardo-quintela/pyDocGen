@@ -239,7 +239,7 @@ def google_doc_parser(path: str, md_file_path: str):
             
             # write the args if they exist
             if docstring_start != 2 and args_ind >= len("Args:\n"):
-                append_file(file, "**Arguments:**  \n  \n>" + re.sub(r"\n+|\\n+", "  \n", re.sub(r" {2,}", "", args)) + "  \n  \n")
+                append_file(file, "**Arguments:**  \n  \n>" + re.sub(r"\n+|\\n+", "  \n>", re.sub(r" {2,}", "", args)) + "  \n  \n")
 
             # write the raises if they exist
             if docstring_start != 2 and raises_ind >= len("Raises:\n"):
