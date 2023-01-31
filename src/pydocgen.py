@@ -3,7 +3,7 @@
 import sys
 import argparse
 
-from dep import read_file, get_mdpath, new_file
+from dep import get_mdpath, new_file
 from pkg_handeler import get_files, get_pkg_name
 
 from pyparser import google_doc_parser
