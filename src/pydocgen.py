@@ -1,6 +1,7 @@
 # Created by Ricardo Quintela
 
 import sys
+import os
 import argparse
 
 from dep import get_mdpath, new_file
@@ -49,7 +50,7 @@ def main(argv: tuple) -> None:
 
         # get the package name and the path to the md file
         pkg_name = get_pkg_name(args.path)
-        file_path = get_mdpath(args.path + "\\" + pkg_name + ".")
+        file_path = get_mdpath(os.path.join(args.path, pkg_name) + ".")
 
         # create a new file and write the name of the package on the top
         with open(file_path, "w") as file:
@@ -60,7 +61,7 @@ def main(argv: tuple) -> None:
 
             # parsing in google format doc
             if args.google:
-                google_doc_parser(args.path + "\\" + path, file_path)
+                google_doc_parser(os.path.join(args.path, path), file_path)
 
             # make a separator
             with open(file_path, "a") as file:

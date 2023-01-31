@@ -8,7 +8,19 @@
 
 # How to use
 
-```pydocgen --help``` for an help message
+```
+usage: pydocgen.py [-h] [-p] -g path
+
+Create documentation from docstrings for python files
+
+positional arguments:
+  path           path to the file or folder
+
+optional arguments:
+  -h, --help     show this help message and exit
+  -p, --package  parse all .py files in a package
+  -g, --google   parse using google style docstrings
+```
 
 
 # Requirements

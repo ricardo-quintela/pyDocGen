@@ -43,18 +43,18 @@ def get_mdpath(path: str) -> str:
         except FileExistsError:
             pass
 
-        md_file_path = "docs\\" + os.path.basename(path)[:os.path.basename(path).find(".")] + ".md"
+        md_file_path = os.path.join("docs", os.path.basename(path)[:os.path.basename(path).find(".")] + ".md")
 
     # absolute path
     else:
         # create a directory
         try:
-            os.mkdir(os.path.dirname(path) + "\\docs")
+            os.mkdir(os.path.join(os.path.dirname(path), "docs"))
 
         except FileExistsError:
             pass
 
-        md_file_path = os.path.dirname(path) + "\\docs\\" + os.path.basename(path)[:os.path.basename(path).find(".")] + ".md"
+        md_file_path = os.path.join(os.path.dirname(path), "docs", os.path.basename(path)[:os.path.basename(path).find(".")] + ".md")
 
 
     return md_file_path
