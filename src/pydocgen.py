@@ -1,6 +1,7 @@
 # Created by Ricardo Quintela
 
 import sys
+import argparse
 
 from dep import read_file, get_mdpath, new_file
 from pkg_handeler import get_files, get_pkg_name
@@ -15,49 +16,40 @@ def main(argv: tuple) -> None:
         argv (tuple): the command line args
     """
 
-    # package scan
-    if len(argv) > 2 and "--" in argv[2]:
+    # parse the arguments
+    argparser = argparse.ArgumentParser(description="Create documentation from docstrings for python files")
 
-        # correct syntax
-        if "--pkg" in argv[2]:
-            isPackage = True
-        
-        # incorrect syntax
-        else:
-            print("Please input a file path or --help to show a help message")
-            return
-    else:
-        isPackage = False
+    argparser.add_argument(
+        "-p", "--package",
+        help="parse all .py files in a package",
+        action="store_true"
+    )
 
-    # no arguments
-    if len(argv) == 1:
-        print("Please input a file path or --help to show a help message")
-        return
+    argparser.add_argument(
+        "path",
+        help="path to the file or folder",
+        type=str
+    )
 
-    # help argument
-    elif argv[1] == "--help":
-        print(read_file("resources/help.txt"))
-        return
+    format_group = argparser.add_mutually_exclusive_group(required=True)
+    format_group.add_argument(
+        "-g", "--google",
+        help="parse using google style docstrings",
+        action="store_true",
+    )
 
-    # google style doc
-    elif argv[1] == "-g":
-        doctype = 1
-
-    # wrong parameters
-    else:
-        print("Please input a file path or --help to show a help message")
-        return
+    args = argparser.parse_args()
 
 
     # package handling
-    if isPackage:
+    if args.package:
 
         # get the files in the given folder
-        py_files = get_files(argv[3])
+        py_files = get_files(args.path)
 
         # get the package name and the path to the md file
-        pkg_name = get_pkg_name(argv[3])
-        file_path = get_mdpath(argv[3] + "\\" + pkg_name + ".")
+        pkg_name = get_pkg_name(args.path)
+        file_path = get_mdpath(args.path + "\\" + pkg_name + ".")
 
         # create a new file and write the name of the package on the top
         with open(file_path, "w") as file:
@@ -67,8 +59,8 @@ def main(argv: tuple) -> None:
         for path in py_files:
 
             # parsing in google format doc
-            if doctype == 1:
-                google_doc_parser(argv[3] + "\\" + path, file_path)
+            if args.google:
+                google_doc_parser(args.path + "\\" + path, file_path)
 
             # make a separator
             with open(file_path, "a") as file:
@@ -78,12 +70,12 @@ def main(argv: tuple) -> None:
 
 
     # create a new file and get the md file path
-    file_path = get_mdpath(argv[2])
+    file_path = get_mdpath(args.path)
     new_file(file_path)
 
     # parsing
-    if doctype == 1:
-        google_doc_parser(argv[2], file_path)
+    if args.google:
+        google_doc_parser(args.path, file_path)
 
 
 if __name__ == "__main__":
