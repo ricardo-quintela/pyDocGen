@@ -76,6 +76,13 @@ def main(argv: tuple) -> None:
 
     # parsing
     if args.google:
+
+        # check if it's a file
+        if not os.path.isfile(args.path):
+            print("Not a valid file path")
+            return
+
+        # parse the given file
         google_doc_parser(args.path, file_path)
 
 
