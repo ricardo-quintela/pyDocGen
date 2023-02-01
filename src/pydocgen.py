@@ -45,6 +45,12 @@ def main(argv: tuple) -> None:
     # package handling
     if args.package:
 
+        # check if it's a valid directory
+        if not os.path.isdir(args.path):
+            print("Not a valid directory")
+            return
+
+
         # get the files in the given folder
         py_files = get_files(args.path)
 
