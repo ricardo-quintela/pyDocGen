@@ -22,6 +22,8 @@ def find_between(arr: list, num: int) -> int:
 
     if arr[-1] < num:
         return arr[-1]
+
+    return -1
         
 
 def get_mdpath(path: str) -> str:

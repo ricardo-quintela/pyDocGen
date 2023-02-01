@@ -3,7 +3,7 @@
 
 ## Current support
 
-* Scanning of entire packages for pyhton files
+* Scanning of entire packages/directories for pyhton files
 * Google style docstrings
 
 # How to use

@@ -97,7 +97,7 @@ def google_doc_parser(path: str, md_file_path: str):
             if has_parentheses:
                 name_end = has_parentheses.start() + 1
                 inheritance = has_parentheses.group()[1:-1]
-                inheritance = re.sub(r", *", chr(96)*3 + ", " + chr(96)*3, inheritance)
+                inheritance = re.sub(r", *", ", ", inheritance)
 
                 cl_name = text[parent_class + len("class") : parent_class + len("class") + name_end]
 
@@ -114,7 +114,7 @@ def google_doc_parser(path: str, md_file_path: str):
 
 
                 if len(inheritance):
-                    append_file(file, "**Inherits from** " + chr(96)*3 + inheritance + chr(96)*3 + "\n\n---\n  \n  ")
+                    append_file(file, "**Inherits from** " + inheritance + "\n\n---\n  \n  ")
 
 
 
@@ -126,7 +126,7 @@ def google_doc_parser(path: str, md_file_path: str):
         # write a line break if the current function no longer belongs to a class
         if prev_func_in_class and not inClass:
             with open(md_file_path, "a") as file:
-                append_file(file, "\n  \n---\n  ")
+                append_file(file, "\n\n  \n---\n---\n  ")
 
 
 
@@ -203,13 +203,13 @@ def google_doc_parser(path: str, md_file_path: str):
             var_indexes = re.finditer(r"[a-zA-Z0-9_]+: |[a-zA-Z0-9_]+ \(", args)
 
             for var in var_indexes:
-                args = args.replace(var.group(0), chr(96)*3 + var.group(0)[:-2] + chr(96)*3 + var.group(0)[-2:])
+                args = args.replace(var.group(0), var.group(0)[:-2] + var.group(0)[-2:])
 
             # place backticks surrounding the var name
             type_indexes = re.finditer(r" \([a-zA-Z0-9_]+\):", args)
 
             for var in type_indexes:
-                args = args.replace(var.group(0), " (" + chr(96)*3 + var.group(0)[2:-2] + chr(96)*3 + "):")
+                args = args.replace(var.group(0), " (" + var.group(0)[2:-2] + "):")
             
 
 
@@ -235,19 +235,19 @@ def google_doc_parser(path: str, md_file_path: str):
         with open(md_file_path, "a") as file:
 
             # write the name and the description
-            append_file(file, "## " + re.sub(r"_", "\\_", name) + "\n---  \n  \n**Signature:**  \n  \n>" + chr(96)*3 + re.sub(r"\n+", "", signature) + chr(96)*3 + "  \n  \n**Description:**  \n  \n>" + re.sub(r"\\n+", "  \n>", re.sub(r" {2,}", "", re.sub(r"\n+", "", description))) + "  \n  \n")
+            append_file(file, "## " + re.sub(r"_", "\\_", name) + "\n---  \n  \n**Signature:**  \n  \n```\n" + re.sub(r"\n+", "", signature) + "\n```  \n**Description:**  \n  \n>" + re.sub(r"\\n+", "  \n>", re.sub(r" {2,}", "", re.sub(r"\n+", "", description))) + "  \n  \n")
             
             # write the args if they exist
             if docstring_start != 2 and args_ind >= len("Args:\n"):
-                append_file(file, "**Arguments:**  \n  \n>" + re.sub(r"\n+|\\n+", "  \n>", re.sub(r" {2,}", "", args)) + "  \n  \n")
+                append_file(file, "**Arguments:**  \n  \n```\n" + re.sub(r"\n+|\\n+", "  \n", re.sub(r" {2,}", "", re.sub(r"\t", "", args))) + "```  \n")
 
             # write the raises if they exist
             if docstring_start != 2 and raises_ind >= len("Raises:\n"):
-                append_file(file, "**Raises:**  \n  \n>" + re.sub(r" {2,}", "", raises) + "  \n  \n")
+                append_file(file, "**Raises:**  \n  \n```\n" + re.sub(r" {2,}", "", re.sub(r"\t", "", raises)) + "```  \n")
                 
             # write the returns if they exist
             if docstring_start != 2 and returns_ind >= len("Returns:\n"):
-                append_file(file, "**Returns:**  \n  \n>" + re.sub(r" {2,}", "", returns) + "  \n  \n")
+                append_file(file, "**Returns:**  \n  \n```\n" + re.sub(r" {2,}", "", re.sub(r"\t", "", returns)) + "```  \n")
 
 
             append_file(file, "  \n")

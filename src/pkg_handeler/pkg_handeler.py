@@ -33,4 +33,8 @@ def get_pkg_name(path: str) -> str:
         str: the package name
     """
 
+    if path[-1] == "/" or path[-1] == "\\":
+        return os.path.basename(path[:-1]).capitalize()
+
     return os.path.basename(path).capitalize()
+    

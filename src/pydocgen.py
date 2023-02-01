@@ -45,6 +45,12 @@ def main(argv: tuple) -> None:
     # package handling
     if args.package:
 
+        # check if it's a valid directory
+        if not os.path.isdir(args.path):
+            print("Not a valid directory")
+            return
+
+
         # get the files in the given folder
         py_files = get_files(args.path)
 
@@ -54,7 +60,7 @@ def main(argv: tuple) -> None:
 
         # create a new file and write the name of the package on the top
         with open(file_path, "w") as file:
-            file.write("# The " + pkg_name + " package\n\n")
+            file.write("# The " + pkg_name + " package\n")
 
 
         for path in py_files:
@@ -76,6 +82,13 @@ def main(argv: tuple) -> None:
 
     # parsing
     if args.google:
+
+        # check if it's a file
+        if not os.path.isfile(args.path):
+            print("Not a valid file path")
+            return
+
+        # parse the given file
         google_doc_parser(args.path, file_path)
 
 
