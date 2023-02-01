@@ -60,7 +60,7 @@ def main(argv: tuple) -> None:
 
         # create a new file and write the name of the package on the top
         with open(file_path, "w") as file:
-            file.write("# The " + pkg_name + " package\n\n")
+            file.write("# The " + pkg_name + " package\n")
 
 
         for path in py_files:
