@@ -1,0 +1,9 @@
+"""Normal docstring description
+
+Args:
+    var1 (type1): Variable1 description
+    var2 (type2): Variable2 description
+
+Returns:
+    type3: ReturnValue description
+"""
